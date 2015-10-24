@@ -86,5 +86,5 @@ That ZPSI file will be parsed into this table:
   * As of now, there is no "Object to ZPSI" function. I've only been using Lua for 4 days now (at time of writing), I'm not great with this yet.
   * It's probably poorly programmed! As I just said, I've only been using Lua for 4 days! One thing I know I could change is all the ==/~= nil in if statements. I tried that, but I broke something and reverted.
   
-## Liscence
+## License
 The ZPSI library is released under the MIT liscense. You are free to use it as you please. Improvements to the code are much appretiated.
