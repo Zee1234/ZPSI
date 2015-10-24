@@ -21,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 --]]
-
 ZPSI = {}
 OUTPUT = {}
 
@@ -55,26 +54,18 @@ function DepthArrayToFields(fieldarray,depth)
   return DepthArrayToFields(fieldarray,depth - 1) .. "." .. tostring(fieldarray[depth])
 end
 
-function SetField (fields, value)
-  local t = OUTPUT        -- start with the table of globals
-  for w, d in fields:gmatch("([%w_]+)(.?)") do
-    if d == "." then      -- not last field?
-      t[w] = t[w] or {}   -- create table if absent
-      t = t[w]            -- get the table
-    else                  -- last field
-      t[w] = value        -- do the assignment
-    end
-  end
-end
-
-function SetArrayField (fields, value)
-  local t = OUTPUT        -- start with the table of globals
-  for w, d in string.gfind(fields, "([%w_]+)(.?)") do
-    if d == "." then      -- not last field?
-      t[w] = t[w] or {}   -- create table if absent
-      t = t[w]            -- get the table
-    else                  -- last field
-      t[w] = value        -- do the assignment
+function SetField (fields,value,a_Array,arraynum)
+  local t = OUTPUT
+  for w, d in string.gmatch(fields, "([%w_]+)(.?)") do
+    if d == "." then
+      t[w] = t[w] or {}
+      t = t[w]
+    else
+      if a_Array then
+        t[arraynum] = value
+      else
+        t[w] = value
+      end
     end
   end
 end
@@ -122,11 +113,11 @@ function ZPSI.parse(filename,truncate)
       local value = StringFunctions(lines,"ValueText",firstcolon)
       if(depthnum ~= (firstcolon - 1)) then
         DEPTHNAMES[depthnum + 1] = string.sub(lines,depthnum+1,firstcolon-1)
-        SetField(DepthArrayToFields(DEPTHNAMES,depthnum+1),CheckValueOrObj(value,truncate))
+        SetField(DepthArrayToFields(DEPTHNAMES,depthnum+1),CheckValueOrObj(value,truncate),false)
       else
         if linenum ~= lastarrayline + 1 then arraynum = 1 end
         DEPTHNAMES[depthnum + 1] = arraynum
-        SetField(DepthArrayToFields(DEPTHNAMES,depthnum+1),CheckValueOrObj(value,truncate))
+        SetField(DepthArrayToFields(DEPTHNAMES,depthnum+1),CheckValueOrObj(value,truncate),true,arraynum)
         lastarrayline = linenum
         arraynum = arraynum+1
       end
