@@ -32,6 +32,9 @@ FirstKey:
 ---: The value above me is First.First.Second[3] and is a boolean value false
 ---: yes
 ---: The value above me is boolean value true!
+
+# This is a comment!
+
 SecondKey:
 -: 26
 -: 155.12345676543
@@ -80,6 +83,7 @@ That ZPSI file will be parsed into this table:
 
   * The Keys (the parts before the : that are not "-") need to be valid Lua variable names. This means that they can only contain letters, numbers, and underscores, and must not begin with an underscore.    
   * You can't make an array in an array. Not automatically, at least. Not yet.    
+  * Comments can only exist on new lines. You cannot put a comment at the end of a line. If you did this, the comment would be parsed as part of the string.
   * A string that is just numbers and spaces will be read as a number unless there is a space before the first character of a number.  
   * By default, all string have all trailing whitespace removed. However, when you call ZPSI.parse, you can add a second operator. If you call `ZPSI.parse(<filename>,false)`, then the strings will not be truncated. Numerical and Boolean values are unaffected by this setting.    
   * The space after the colon is really important and things break if it isn't there. No, seriously. Without that single space, the whole variable is wrong.
