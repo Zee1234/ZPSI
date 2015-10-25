@@ -29,14 +29,12 @@ function StringFunctions(inputstring,method,e1,e2,e3,e4)
     ["DashString"] = function(value) return string.match(value,"%-*") end,
     ["FirstColon"] = function(value) return tonumber(string.match(string.find(value,"[^\\]:"),"%d*"))+1 end,
     ["ValueText"] = function(value,position) return string.sub(value,position+2) end,
-    ["CheckIfNum"] = function(value) if string.match(value:match(".*%S"),"^%-?%d*%.?%d*$") ~= nil then return true else return false end end,
+    ["CheckIfNum"] = function(value) if string.match(value:match(".*%S"),"^%-?%d*%.?%d*$") then return true else return false end end,
     ["CheckIfBool"] = function(value)
       local a = string.match(value:lower(),"^true%s*$")
-      local b = string.match(value:lower(),"^yes%s*$")
       local c = string.match(value:lower(),"^false%s*$")
-      local d = string.match(value:lower(),"^no%s*$")
-      if a ~= nil or b ~= nil or c ~= nil or d ~= nil then
-        if a ~= nil or b ~= nil then
+      if a or c then
+        if a then
           return true, true 
         else
           return true, false
@@ -83,30 +81,30 @@ function FindType(a_String,truncate)
   local isNum, isBool, BoolVal = StringFunctions(a_String,"CheckIfNum"),StringFunctions(a_String,"CheckIfBool")
   if isNum then return tonumber(string.match(a_String,".*%S")) end
   if isBool then return BoolVal end
-  return string.match(a_String,".*%S")
+  return if truncate then string.match(a_String,".*%S") else a_String end
 end
 
 function CheckValueOrObj(a_String,truncate)
-  if(a_String:match("%g") == nil) then
+  if(not a_String:match("%g")) then
     return {}
   else
     if truncate then
-      return FindType(a_string)
+      return FindType(a_String,true)
     else
-      return FindType(a_String)
+      return FindType(a_String,false)
     end
   end
 end
 
 function ZPSI.parse(filename,truncate)
-  if truncate == nil then truncate = true end
+  if not truncate then truncate = true end
   local DEPTHNAMES = {}
   local file = io.open(filename)
   local linenum = 1
   local lastarrayline = 0
   local arraynum = 1
   for lines in file:lines() do
-    if (string.match(lines,"^%S.*") ~= nil) and (string.sub(string.match(lines,"^%S.*"),1,1) ~= "#") then
+    if string.match(lines,"^%S.*") and (string.sub(string.match(lines,"^%S.*"),1,1) ~= "#") then
       local dashes = StringFunctions(lines,"DashString")
       local depthnum = string.len(dashes)
       local firstcolon = StringFunctions(lines,"FirstColon")
