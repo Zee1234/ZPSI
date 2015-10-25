@@ -8,7 +8,7 @@ ZPSI is a simple file format made specifically to be translated into a lua table
 You use require. In most cases, `require "ZPSI"` will be all you have to do to be able to use ZPSI.parse.
 
 `ZPSI.parse(filename)` will turn the ZPSI file into an object! Do note that this removes excess spaces from the end of all strings. If you do not want this behavior, use `ZPSI.parse(filename,false)`. This will leave all strings exactly as they are in the file. Do not that this means you might need to remove excess variables for yourself.    
-ZPSI identifies numbers and boolean values and processes them accodingly. True and Yes both resolve to bool(true) while False and No both resolve to bool(false). Capitalization DOES NOT MATTER! True, true, TRUE, and TrUe are all proccessed the same way!
+ZPSI identifies numbers and boolean values and processes them accodingly. True and TRUe both resolve to bool(true) while False and FALsE both resolve to bool(false). Capitalization DOES NOT MATTER! True, true, TRUE, and TrUe are all proccessed the same way!
 
 ## Syntax
 
