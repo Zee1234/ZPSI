@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 --]]
 ZPSI = {}
-OUTPUT = {}
+local OUTPUT = {}
 
 function StringFunctions(inputstring,method,e1,e2,e3,e4)
   local switch = {
@@ -128,3 +128,5 @@ end
 function ZPSI.truncate(a_String)
   return string.match(a_String,".*%S")
 end
+
+return ZPSI
