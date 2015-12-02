@@ -27,6 +27,7 @@ local OUTPUT = {}
 
 function StringFunctions.RemoveComments(a_string)
   local _,num1 = a_string:find("^%s*")
+  if num1 == a_string:len() then return true, "" end
   local _,num2 = a_string:find("#")
   if num1 == (num2 or -1) - 1 then
     return true, ""
