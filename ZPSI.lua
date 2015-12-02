@@ -23,23 +23,12 @@ THE SOFTWARE.
 --]]
 local ZPSI = {}
 local StringFunctions = {}
-local OUTPUT = {}
+OUTPUT = {}
 
 function StringFunctions.RemoveComments(a_string)
-  local _,num1 = a_string:find("^%s*")
-  if num1 == a_string:len() then return true, "" end
-  local _,num2 = a_string:find("#")
-  if num1 == (num2 or -1) - 1 then
-    return true, ""
-  else
-    local mutil = a_string
-    local pos = 1
-    while mutil ~= "" do
-      local spot = mutil:find("#") or mutil:len()
-      pos, mutil = pos + spot, mutil:sub(spot-1,spot-1) == "\\" and mutil:sub(spot+1) or ""
-    end
-    return false, a_string:sub(1,pos-1)
-  end
+  a_string = a_string:gsub("^%s*(.*)","%1")
+  if a_string:sub(1,1) == "#" then return "" end
+  return a_string:gsub("^(.-)([^\\])#.*$","%1%2"):gsub("\\#","#")
 end
 
 function StringFunctions.FirstColon(a_string)
@@ -84,21 +73,21 @@ function StringFunctions.GetKey(a_string)
   return string.match(a_string:sub(1,colon-1),"[%w_]+"), a_string:sub(colon+1)
 end
 
-function StringFunctions.GetMess(a_string)
-  a_string = a_string:match( "^%s*(.-)%s*$" )
+function StringFunctions.GetMess(a_string,case)
+  a_string = a_string:gsub("^%s*(.-)%s*$","%1")
   if a_string == "" then return {} end
   if a_string:find("^\".*\"$") then
-    return a_string:sub(2,a_string:len()-1)
+    return ZPSI.replace(a_string:sub(2,a_string:len()-1),case)
   else
-    return StringFunctions.GetType(a_string)
+    return StringFunctions.GetType(ZPSI.replace(a_string,case))
   end
 end
 
-function StringFunctions.Deconstruct(a_string)
+function StringFunctions.Deconstruct(a_string,case)
   local depth, key, message
   depth, a_string = StringFunctions.GetDepth(a_string)
   key, a_string = StringFunctions.GetKey(a_string)
-  message = StringFunctions.GetMess(a_string)
+  message = StringFunctions.GetMess(a_string,case)
   return depth,key,message
 end
 
@@ -122,18 +111,19 @@ end
 }
 --]]
 
-function ZPSI.parse(filename)
+function ZPSI.parse(filename,case)
+  local casetest = {[3]=true,[2]=true,[1]=true,[0]=true}
+  if not case or not casetest[case] then case = 3 end
   local store = {}
   local file = io.open(filename)
   local linenum = 0
   local lastdepth = 0
-  local pure
   for lines in file:lines() do
     linenum = linenum + 1
-    pure,lines = StringFunctions.RemoveComments(lines)
+    lines = StringFunctions.RemoveComments(lines)
     repeat
-      if pure then break end
-      local depth,key,message = StringFunctions.Deconstruct(lines)
+      if lines:len() == 0 or lines:match("%s*"):len() == lines:len() then break end
+      local depth,key,message = StringFunctions.Deconstruct(lines,case)
       assert(depth <= lastdepth + 1, "Invalid key at line " .. tostring(linenum) .. "!")
       lastdepth = depth
       for i1 = #store, depth + 1, -1 do store[i1] = nil end
@@ -156,4 +146,14 @@ function ZPSI.parse(filename)
   return OUTPUT
 end
 
+function ZPSI.replace(a_string,case)
+  local switch = {}
+  switch[0] = function(b_string) return b_string end
+  switch[1] = function(b_string) return b_string:gsub("([^\\])\\t","%1\t"):gsub("^\\t","\t"):gsub("\\\\t","\\t") end
+  switch[2] = function(b_string) return b_string:gsub("([^\\])\\n","%1\n"):gsub("^\\n","\n"):gsub("\\\\n","\\n") end
+  switch[3] = function(b_string) return b_string:gsub("([^\\])\\t","%1\t"):gsub("^\\t","\t"):gsub("\\\\t","\\t"):gsub("([^\\])\\n","%1\n"):gsub("^\\n","\n"):gsub("\\\\n","\\n") end
+  return switch[case](a_string) or a_string
+end
+
 return ZPSI
+
