@@ -33,7 +33,11 @@ FirstKey:
 ---: The value above me is FirstKey.a1.b2[3] and is a boolean value false
 ---:yes
 ---: The value above me is the string "yes"!
+---:
 ----:Nesting in arrays works now! YAY!
+----: Just like in YAML, you need to have an empty key in the parent array
+----: This allows you to make multiple different arrays as elements of one parent array
+----: More on this below
 ----: "You can have an octothorp like this: \#"
 ----: You can also do it without the quote, like so: \# #This part is still a comment though!
 ----d1: You can even have key names and arrays at the same depth!
@@ -62,6 +66,17 @@ a2:
 a3:
 a4: The guy above me is empty and that is TOTALLY FINE!
 a5: The program just thinks of a3 as an empty object.
+: You can even do arrays at the highest level!
+: Cool, isn't it?
+:
+-: So here we define an array as element 3 of the main object.
+-: What happens if we want another array under element 4 of the main object?
+-: Well, if there wasn't that empty line syntax, we'd have to manually define an element as "4"
+-: But that would break a lot of things and would be hard to maintain.
+-: So instead, this syntax is used
+: # Here it is again
+-: This is element one of Main_Object[4]
+-: Now you see why this syntax is so useful!
 
 
 ```
@@ -70,6 +85,19 @@ That ZPSI file will be parsed into this table:
 
 ```
 {
+	[1] = "You can even do arrays at the highest level!";
+	[2] = "Cool, isn't it?";
+	[3] = {
+		[1] = "So here we define an array as element 3 of the main object.";
+		[2] = "What happens if we want another array under element 4 of the main object?";
+		[3] = "Well, if there wasn't that empty line syntax, we'd have to manually define an element as "4"";
+		[4] = "But that would break a lot of things and would be hard to maintain.";
+		[5] = "So instead, this syntax is used";
+	};
+	[4] = {
+		[1] = "This is element one of Main_Object[4]";
+		[2] = "Now you see why this syntax is so useful!";
+	};
 	["a2"] = {
 		[1] = -15.2;
 		[2] = 0;
@@ -88,6 +116,9 @@ That ZPSI file will be parsed into this table:
 		["b2"] = "The above 5 are all read into numbers";
 		["b6"] = "Just realize that \n and \t doesn't make newlines or tabs";
 	};
+	["a4"] = "The guy above me is empty and that is TOTALLY FINE!";
+	["a5"] = "The program just thinks of a3 as an empty object.";
+	["a3"] = {};
 	["FirstKey"] = {
 		["a1"] = {
 			["b5"] = "          but all this space remains               ";
@@ -103,17 +134,17 @@ That ZPSI file will be parsed into this table:
 				[6] = "The value above me is the string "yes"!";
 				[7] = {
 					[1] = "Nesting in arrays works now! YAY!";
-					[2] = "You can have an octothorp like this: #";
-					[3] = "You can also do it without the quote, like so: #";
-					[4] = "and alternate between them!";
+					[2] = "Just like in YAML, you need to have an empty key in the parent array";
+					[3] = "This allows you to make multiple different arrays as elements of one parent array";
+					[4] = "More on this below";
+					[5] = "You can have an octothorp like this: #";
+					[6] = "You can also do it without the quote, like so: #";
+					[7] = "and alternate between them!";
 					["d1"] = "You can even have key names and arrays at the same depth!";
 				};
 			};
 		};
 	};
-	["a5"] = "The program just thinks of a3 as an empty object.";
-	["a3"] = {};
-	["a4"] = "The guy above me is empty and that is TOTALLY FINE!";
 };
 ```
 Pardon the weird syntax and the "out of orderness" present. That's due to the table -> string program I used and lua's limitations, respectively.
