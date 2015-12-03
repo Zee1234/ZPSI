@@ -20,6 +20,7 @@ The top level is defined like so:
 If you want to give the key a value, just place it after the colon.    
 `First Key: First Value`    
 However, the value is not, and is never, nessecary.
+Newlines can exist in strings by using "\n". Tabs can be places with "\t" "\\t" and "\\n" both resolve to the literals "\t" and "\n". You can also change this behavior. When you call ZPSI.parse(filename), you can instead call ZPSI.parse(filename,#) where # is 0, 1, 2, or 3 (if unspecified or any other value is entered, then 3 is assumed). 0 completely removes this parsing. 1 replaces "\t" but not "\n". 2 replaces "\n" but not "\t". 3 replaces both "\n" and "\t".
 Here's an example ZPSI file:
 ```
 FirstKey:
