@@ -1,0 +1,54 @@
+FirstKey:
+-a1:
+--b1: true
+--b2: 
+---: I'm in an array!
+---: I'm second in an array!
+---: false
+---: The value above me is FirstKey.a1.b2[3] and is a boolean value false
+---:yes
+---: The value above me is the string "yes"!
+---:
+----:Nesting in arrays works now! YAY!
+----: Just like in YAML, you need to have an empty key in the parent array
+----: This allows you to make multiple different arrays as elements of one parent array
+----: More on this below
+----: "You can have an octothorp like this: \#"
+----: You can also do it without the quote, like so: \# #This part is still a comment though!
+----d1: You can even have key names and arrays at the same depth!
+----: and alternate between them!
+
+--b3: Line breaks aren't bad
+              #And comments with whitespace before the octothorp are fine as well!
+--b4:          Even in a value              #Remember, all that extra space is trimmed off!
+--b5: "          but all this space remains               " # Quotes are cool, amirite?
+a2: 
+-b1: repeated names are fine so long as they share different parents
+-: -15.2
+-: 0
+-: -1
+-: -.3
+-: .3
+-b2: "The above 5 are all read into numbers"
+-: true
+-: false
+-: tRUe
+-: fAlSe
+-b3: And the above 4 are all read into booleans
+-b4: You can insert newlines into strings like this: \n I'm on a new line!!
+-b5: This also work with tabs using \t !
+-b6: Just realize that \\n and \\t doesn't make newlines or tabs
+a3:
+a4: The guy above me is empty and that is TOTALLY FINE!
+a5: The program just thinks of a3 as an empty object.
+: You can even do arrays at the highest level!
+: Cool, isn't it?
+:
+-: So here we define an array as element 3 of the main object.
+-: What happens if we want another array under element 4 of the main object?
+-: Well, if there wasn't that empty line syntax, we'd have to manually define an element as "4"
+-: But that would break a lot of things and would be hard to maintain.
+-: So instead, this syntax is used
+: # Here it is again
+-: This is element one of Main_Object[4]
+-: Now you see why this syntax is so useful!
